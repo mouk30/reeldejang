@@ -1,0 +1,8 @@
+{
+  "name": "릴게임 공식 포털 | 바다이야기 야마토 황금성 무료체험 및 구글 1위 SEO 사이트",
+  "description": "대한민국 최상위 릴게임 정보 포털. 바다이야기, 야마토, 황금성, 손오공 무료체험 시뮬레이터, 실시간 잭팟, 족보 공략, 안전 검증 랭킹 및 모바일 지원 안내.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
