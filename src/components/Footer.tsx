@@ -2,11 +2,11 @@ import React from 'react';
 import { Flame, ShieldCheck, HelpCircle, FileText, Lock, Award, HeartHandshake } from 'lucide-react';
 
 interface FooterProps {
-  onOpenSeoModal: () => void;
+  onOpenSeoModal?: () => void;
   onOpenContactModal: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenSeoModal, onOpenContactModal }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenContactModal }) => {
   return (
     <footer className="bg-[#050811] border-t border-slate-800 text-slate-400 text-xs">
       {/* Top SEO Keyword Matrix */}
@@ -72,16 +72,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenSeoModal, onOpenContactMod
 
             <div className="mt-4 pt-3 border-t border-slate-900 flex gap-2">
               <button
-                onClick={onOpenSeoModal}
-                className="text-[11px] text-amber-400 hover:underline cursor-pointer"
-              >
-                [구글 SEO 리포트 보기]
-              </button>
-              <button
                 onClick={onOpenContactModal}
                 className="text-[11px] text-cyan-400 hover:underline cursor-pointer"
               >
-                [1:1 문의센터]
+                [1:1 안전 문의센터]
               </button>
             </div>
           </div>

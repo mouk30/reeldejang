@@ -4,9 +4,10 @@ import { X, CheckCircle2, Search, Smartphone, Monitor, Code2, FileText, Sparkles
 interface SeoAuditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenKeywordGenerator?: () => void;
 }
 
-export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({ isOpen, onClose }) => {
+export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({ isOpen, onClose, onOpenKeywordGenerator }) => {
   const [activeTab, setActiveTab] = useState<'serp' | 'meta' | 'schema' | 'keywords' | 'sitemap'>('serp');
   const [serpView, setSerpView] = useState<'mobile' | 'desktop'>('mobile');
   const [copied, setCopied] = useState(false);
@@ -75,12 +76,27 @@ Sitemap: https://seoulmaterial.com/sitemap.xml`;
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {onOpenKeywordGenerator && (
+              <button
+                onClick={() => {
+                  onClose();
+                  onOpenKeywordGenerator();
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 cursor-pointer transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-slate-950" />
+                <span>AI 롱테일 키워드 생성</span>
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Tab Navigation */}

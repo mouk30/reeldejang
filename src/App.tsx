@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { GameId, JackpotRecord } from './types';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
@@ -10,15 +10,41 @@ import { MobileOptimizationGuide } from './components/MobileOptimizationGuide';
 import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import { SeoAuditModal } from './components/SeoAuditModal';
+import { SeoKeywordGeneratorModal } from './components/SeoKeywordGeneratorModal';
 import { ContactModal } from './components/ContactModal';
-import { Flame, BarChart3, Send, ArrowUp } from 'lucide-react';
+import { Flame, Send, ArrowUp } from 'lucide-react';
 
 export default function App() {
   const [selectedGameId, setSelectedGameId] = useState<GameId>('sea-story');
   const [isSeoModalOpen, setIsSeoModalOpen] = useState<boolean>(false);
+  const [isKeywordGenModalOpen, setIsKeywordGenModalOpen] = useState<boolean>(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState<boolean>(false);
   const [targetSiteName, setTargetSiteName] = useState<string | undefined>(undefined);
   const [customJackpots, setCustomJackpots] = useState<JackpotRecord[]>([]);
+
+  // Hidden admin hotkeys: Ctrl+Shift+K for Keyword Gen, Ctrl+Shift+S for SEO Audit
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === 'K' || e.key === 'k')) {
+        e.preventDefault();
+        setIsKeywordGenModalOpen(prev => !prev);
+      } else if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) {
+        e.preventDefault();
+        setIsSeoModalOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Also support ?admin=seo or ?admin=keyword in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === 'seo') {
+      setIsSeoModalOpen(true);
+    } else if (params.get('admin') === 'keyword') {
+      setIsKeywordGenModalOpen(true);
+    }
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Scroll to simulator section smoothly
   const scrollToSimulator = useCallback(() => {
@@ -65,6 +91,7 @@ export default function App() {
       <Navbar
         onOpenSeoModal={() => setIsSeoModalOpen(true)}
         onOpenContactModal={handleGeneralContact}
+        onOpenKeywordGenerator={() => setIsKeywordGenModalOpen(true)}
       />
 
       {/* Main Semantic Content for Search Engines & Visitors */}
@@ -114,6 +141,13 @@ export default function App() {
       <SeoAuditModal
         isOpen={isSeoModalOpen}
         onClose={() => setIsSeoModalOpen(false)}
+        onOpenKeywordGenerator={() => setIsKeywordGenModalOpen(true)}
+      />
+
+      <SeoKeywordGeneratorModal
+        isOpen={isKeywordGenModalOpen}
+        onClose={() => setIsKeywordGenModalOpen(false)}
+        initialDomain="seoulmaterial.com"
       />
 
       <ContactModal
@@ -131,15 +165,6 @@ export default function App() {
           title="무료 시뮬레이터로 이동"
         >
           <Flame className="w-5 h-5 fill-slate-950" />
-        </button>
-
-        <button
-          id="floating-seo-btn"
-          onClick={() => setIsSeoModalOpen(true)}
-          className="p-3 rounded-full bg-slate-900 border border-amber-500/40 text-amber-400 shadow-xl hover:scale-110 transition-transform cursor-pointer flex items-center justify-center"
-          title="구글 SEO 검증기"
-        >
-          <BarChart3 className="w-5 h-5" />
         </button>
 
         <button

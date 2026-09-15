@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Flame, Search, HelpCircle, Smartphone, Award, Trophy, Volume2, VolumeX, Menu, X, BarChart3, Send } from 'lucide-react';
+import { ShieldCheck, Flame, Search, HelpCircle, Smartphone, Award, Trophy, Volume2, VolumeX, Menu, X, Send } from 'lucide-react';
 import { soundManager } from '../utils/audio';
 
 interface NavbarProps {
-  onOpenSeoModal: () => void;
+  onOpenSeoModal?: () => void;
   onOpenContactModal: () => void;
+  onOpenKeywordGenerator?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenSeoModal, onOpenContactModal }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenSeoModal, onOpenContactModal, onOpenKeywordGenerator }) => {
   const [onlineUsers, setOnlineUsers] = useState(3842);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -51,24 +52,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSeoModal, onOpenContactMod
             >
               {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-amber-400" /> : <VolumeX className="w-3.5 h-3.5 text-slate-500" />}
               <span>{soundEnabled ? '효과음 ON' : '효과음 OFF'}</span>
-            </button>
-
-            <button
-              id="navbar-seo-audit-btn"
-              onClick={onOpenSeoModal}
-              className="flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-xs transition-colors cursor-pointer"
-            >
-              <BarChart3 className="w-3 h-3 text-amber-400" />
-              <span>구글 SEO 점검</span>
-            </button>
-
-            <button
-              id="navbar-contact-header-btn"
-              onClick={onOpenContactModal}
-              className="flex items-center gap-1 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded text-xs transition-colors cursor-pointer"
-            >
-              <Send className="w-3 h-3 text-cyan-400" />
-              <span>1:1 검증 문의</span>
             </button>
           </div>
         </div>
@@ -202,24 +185,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSeoModal, onOpenContactMod
             <span>자주 묻는 질문 FAQ</span>
           </a>
 
-          <div className="pt-2 border-t border-slate-800 flex gap-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenSeoModal();
-              }}
-              className="flex-1 py-2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-semibold text-center"
-            >
-              SEO 점검 분석기
-            </button>
+          <div className="pt-2 border-t border-slate-800">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenContactModal();
               }}
-              className="flex-1 py-2 rounded bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold text-center"
+              className="w-full py-2.5 rounded-lg bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold text-center flex items-center justify-center gap-2"
             >
-              1:1 검증 문의
+              <Send className="w-4 h-4 text-cyan-400" />
+              <span>1:1 안전 검증 문의</span>
             </button>
           </div>
         </div>
