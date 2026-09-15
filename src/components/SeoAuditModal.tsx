@@ -16,28 +16,28 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({ isOpen, onClose })
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ge-material.co.kr/</loc>
+    <loc>https://seoulmaterial.com/</loc>
     <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ge-material.co.kr/#simulator</loc>
+    <loc>https://seoulmaterial.com/#simulator</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://ge-material.co.kr/#guides</loc>
+    <loc>https://seoulmaterial.com/#guides</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ge-material.co.kr/#rankings</loc>
+    <loc>https://seoulmaterial.com/#rankings</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://ge-material.co.kr/#faq</loc>
+    <loc>https://seoulmaterial.com/#faq</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -45,7 +45,7 @@ export const SeoAuditModal: React.FC<SeoAuditModalProps> = ({ isOpen, onClose })
 
   const robotsTxt = `User-agent: *
 Allow: /
-Sitemap: https://ge-material.co.kr/sitemap.xml`;
+Sitemap: https://seoulmaterial.com/sitemap.xml`;
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -238,7 +238,7 @@ Sitemap: https://ge-material.co.kr/sitemap.xml`;
                 <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
                   <span className="text-[11px] text-purple-400 font-mono block mb-1">&lt;link rel="canonical"&gt; (표준 URL)</span>
                   <div className="font-mono text-xs text-slate-200 bg-slate-950 p-2.5 rounded border border-slate-800">
-                    https://ge-material.co.kr/
+                    https://seoulmaterial.com/
                   </div>
                 </div>
               </div>
