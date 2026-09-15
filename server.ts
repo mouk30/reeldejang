@@ -17,6 +17,132 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', domain: 'seoulmaterial.com' });
 });
 
+// Helper to determine canonical base URL for crawlers
+function resolveBaseUrl(req: express.Request): string {
+  if (req.query.domain && typeof req.query.domain === 'string') {
+    const d = req.query.domain.trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
+    return `https://${d}`;
+  }
+
+  const reqHost = (req.headers['x-forwarded-host'] as string) || req.get('host') || '';
+  if (reqHost && !reqHost.includes('localhost') && !reqHost.includes('127.0.0.1')) {
+    // If request comes from a custom domain
+    if (!reqHost.includes('run.app')) {
+      const proto = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'https');
+      return `${proto}://${reqHost}`;
+    }
+  }
+
+  // Default to official production domain
+  return 'https://seoulmaterial.com';
+}
+
+// Dynamic robots.txt endpoint for search engines (Googlebot, Naver Yeti, Daumoa, Bingbot)
+app.get('/robots.txt', (req, res) => {
+  const baseUrl = resolveBaseUrl(req);
+
+  const robotsTxt = `# robots.txt for Googlebot, Naver, Daum, and Search Crawlers
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Google Search & Google Images
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot-Image
+Allow: /
+
+# Naver Search Engine (Yeti)
+User-agent: Yeti
+Allow: /
+Disallow: /api/
+
+# Daum / Kakao Search Engine
+User-agent: Daumoa
+Allow: /
+Disallow: /api/
+
+# Microsoft Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+
+# Dynamic XML Sitemap Link
+Sitemap: ${baseUrl}/sitemap.xml
+`;
+
+  res.header('Content-Type', 'text/plain; charset=utf-8');
+  res.header('Cache-Control', 'public, max-age=3600');
+  res.send(robotsTxt);
+});
+
+// Dynamic sitemap.xml generator endpoint based on active game categories & guide sections
+app.get('/sitemap.xml', (req, res) => {
+  const baseUrl = resolveBaseUrl(req);
+  const today = new Date().toISOString().split('T')[0];
+
+  // Core sections
+  const coreUrls = [
+    { loc: `${baseUrl}/`, priority: '1.0', changefreq: 'daily' },
+    { loc: `${baseUrl}/#simulator`, priority: '0.95', changefreq: 'daily' },
+    { loc: `${baseUrl}/#guides`, priority: '0.95', changefreq: 'daily' },
+    { loc: `${baseUrl}/#rankings`, priority: '0.90', changefreq: 'daily' },
+    { loc: `${baseUrl}/#mobile`, priority: '0.85', changefreq: 'weekly' },
+    { loc: `${baseUrl}/#faq`, priority: '0.85', changefreq: 'weekly' },
+  ];
+
+  // Individual game categories & guide deep links
+  const games = [
+    { id: 'sea-story', priority: '1.0', changefreq: 'daily' },
+    { id: 'yamato', priority: '1.0', changefreq: 'daily' },
+    { id: 'golden-castle', priority: '0.9', changefreq: 'daily' },
+    { id: 'son-goku', priority: '0.9', changefreq: 'daily' },
+    { id: 'white-whale', priority: '0.85', changefreq: 'weekly' },
+    { id: 'ocean-paradise', priority: '0.85', changefreq: 'weekly' },
+  ];
+
+  const gameUrls: Array<{ loc: string; priority: string; changefreq: string }> = [];
+  games.forEach(game => {
+    // Dynamic Query URL (opens simulator directly on game)
+    gameUrls.push({
+      loc: `${baseUrl}/?game=${game.id}`,
+      priority: game.priority,
+      changefreq: game.changefreq,
+    });
+    // Anchor deep link for specific game guide & strategy
+    gameUrls.push({
+      loc: `${baseUrl}/#guide-${game.id}`,
+      priority: game.priority,
+      changefreq: game.changefreq,
+    });
+  });
+
+  const allUrls = [...coreUrls, ...gameUrls];
+
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+${allUrls
+  .map(
+    url => `  <url>
+    <loc>${url.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${url.changefreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`
+  )
+  .join('\n')}
+</urlset>`;
+
+  res.header('Content-Type', 'application/xml; charset=utf-8');
+  res.header('Cache-Control', 'public, max-age=3600');
+  res.send(sitemapXml);
+});
+
 // Lazy initialize Gemini client to avoid crashes if API key is not present initially
 function getGeminiClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;

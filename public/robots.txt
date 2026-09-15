@@ -1,3 +1,29 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+
+# Google Search & Google Images
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot-Image
+Allow: /
+
+# Naver Search Engine (Yeti)
+User-agent: Yeti
+Allow: /
+Disallow: /api/
+
+# Daum / Kakao Search Engine
+User-agent: Daumoa
+Allow: /
+Disallow: /api/
+
+# Microsoft Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+
+# Dynamic XML Sitemap Link
 Sitemap: https://seoulmaterial.com/sitemap.xml
